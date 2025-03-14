@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
+import { BrowserRouter as Routes, Route, Link } from "react-router-dom"; // Import Link
+import { SignInPage } from "./SignInPage";
 
 function App() {
   const [isloggedIn, setIsLoggedIn] = useState(false);
@@ -51,10 +53,11 @@ function App() {
                   )}
                 </>
               ) : (
-                <a onClick={handleLogin} href="/sign-in">
-                  Sign in
-                </a>
+                <Link to="/signin">Sign In</Link>
               )}
+              <Routes>
+                <Route path="/signin" element={<SignInPage />} />
+              </Routes>
             </div>
           </nav>
         </div>
