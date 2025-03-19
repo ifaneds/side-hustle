@@ -1,0 +1,39 @@
+/* SignInPage.css */
+
+.sign-up {
+  width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.sign-up h2 {
+  text-align: center;
+}
+
+.sign-up div {
+  margin-bottom: 10px;
+}
+
+.sign-up label {
+  display: block;
+}
+
+.sign-up input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.sign-up button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.sign-up button:hover {
+  background-color: #0056b3;
+}

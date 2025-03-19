@@ -2,6 +2,8 @@ package com.sidehustle.backend;
 import jakarta.persistence.*;
 import java.util.List;
 
+import org.springframework.data.repository.CrudRepository;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -43,6 +45,8 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.timeZone = timeZone;
     }
+
+
 
     // Getters and Setters
     public Long getId() {

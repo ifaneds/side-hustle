@@ -1,0 +1,46 @@
+/*colours
+dark grey : #1b1c1c
+green: #32cd32
+*/
+.App-header {
+  background-color: #f0f0f0;
+  padding: 10px;
+  display: flex; /* Use flexbox for layout */
+  align-items: center; /* Center items vertically */
+  justify-content: space-between; /* Space out title and nav */
+}
+
+.App-title h1 {
+  margin: 0; /* Reset default margin */
+  color: #2b2b2b;
+}
+
+.App-header nav {
+  display: flex; /* Use flexbox for nav items */
+  align-items: center;
+}
+
+.App-header nav a {
+  margin-right: 20px;
+  padding: 4px 0px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline from links */
+  color: #1b1c1c; /* Set link color */
+}
+.App-header nav Link {
+  margin-right: 20px;
+  padding: 4px 0px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline from links */
+  color: #1b1c1c; /* Set link color */
+}
+
+.App-header nav a:hover {
+  color: #32cd32;
+}
+
+main {
+  padding: 20px;
+}
