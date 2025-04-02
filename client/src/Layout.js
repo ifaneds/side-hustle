@@ -1,37 +1,48 @@
 // Layout.js
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
-import AuthService from "./AuthService"; // Your authentication service
+import { useAuth } from "./AuthContext"; // Import useAuth
+import authService from "./AuthService";
+import CustomDropdown from "./CustomDropdown"; // Import CustomDropdown
+
 import "./Layout.css";
 
 function Layout({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isLoggedIn, setIsLoggedIn } = useAuth(); // Access context
   const navigate = useNavigate();
 
   useEffect(() => {
-    setIsAuthenticated(AuthService.isAuthenticated()); // Check authentication on mount
-  }, []);
+    setIsLoggedIn(authService.isAuthenticated()); // Check on mount
+  }, [setIsLoggedIn]); // Add setIsLoggedIn as dependency
 
   const handleLogout = () => {
-    AuthService.logout();
-    setIsAuthenticated(false);
-    navigate("/signin");
+    authService.logout();
+    setIsLoggedIn(false); // Update context on logout
+    navigate("/"); // Redirect to home page
   };
 
   return (
     <div>
       <header className="App-header">
-        <h1>Side Hustle</h1>
+        <Link to="/">
+          <h1>Side Hustle</h1>
+        </Link>
         <nav>
           <Link to="/find-job">Find a Job</Link>
           <Link to="/post-job">Post a Job</Link>
-          {isAuthenticated ? (
-            <div className="profile-dropdown">
-              <Link to="/profile">Profile</Link>
-              <div className="dropdown-content">
-                <Link to="/settings">Settings</Link>
-                <button onClick={handleLogout}>Logout</button>
-              </div>
+          {isLoggedIn ? ( // Use isLoggedIn from context
+            <div>
+              <CustomDropdown
+                items={["Profile", "Settings", "Help", "Logout"]}
+                buttonText="Account"
+                onItemClick={(item) => {
+                  if (item === "Logout") {
+                    handleLogout();
+                  } else {
+                    navigate(`/${item.toLowerCase()}`);
+                  }
+                }}
+              />
             </div>
           ) : (
             <Link to="/signin">Sign In</Link>

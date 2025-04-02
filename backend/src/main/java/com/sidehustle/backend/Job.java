@@ -1,4 +1,6 @@
+// Job.java
 package com.sidehustle.backend;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -12,19 +14,19 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", nullable = false, length = 255)
+    @Column(name = "title", nullable = false, length = 255, columnDefinition = "character varying")
     private String title;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "location", length = 255)
+    @Column(name = "location", length = 255, columnDefinition = "character varying")
     private String location;
 
     @Column(name = "pay_rate", precision = 10, scale = 2)
     private BigDecimal payRate;
 
-    @Column(name = "category", length = 100)
+    @Column(name = "category", length = 100, columnDefinition = "character varying")
     private String category;
 
     @Column(name = "created_at")
@@ -33,13 +35,17 @@ public class Job {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "skills", columnDefinition = "text")
-    private List<String> skills;
+    @ManyToMany (fetch = FetchType.LAZY) // Use LAZY loading to avoid fetching skills unless needed
+    @JoinTable(
+        name = "job_skills",
+        joinColumns = @JoinColumn(name = "job_id"),
+        inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
+    private List<Skill> skills;
 
-    // Constructors (optional)
     public Job() {}
 
-    public Job(String title, String description, String location, BigDecimal payRate, String category, Long userId, List<String> skills) {
+    public Job(String title, String description, String location, BigDecimal payRate, String category, Long userId, List<Skill> skills) {
         this.title = title;
         this.description = description;
         this.location = location;
@@ -49,7 +55,6 @@ public class Job {
         this.skills = skills;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -114,11 +119,11 @@ public class Job {
         this.userId = userId;
     }
 
-    public List<String> getSkills() {
+    public List<Skill> getSkills() {
         return skills;
     }
 
-    public void setSkills(List<String> skills) {
+    public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
 }
