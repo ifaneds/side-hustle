@@ -1,5 +1,7 @@
 package com.sidehustle.backend;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
@@ -28,7 +30,6 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    private String jwtSecret = System.getenv("JWT_SECRET");
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
@@ -37,24 +38,38 @@ public class UserController {
         user.setPassword(hashedPassword);
         userRepository.save(user);
         // 2. Save the user to the database (using your data access layer)
-        // ... (Your database saving logic here) ...
 
 return new ResponseEntity<>("Account created successfully", HttpStatus.CREATED);   
  }
 
-     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        User storedUser = userRepository.findByEmail(user.getEmail()); // Assuming you have findByEmail method
-        if (storedUser == null) {
-            return ResponseEntity.status(401).body("Invalid credentials");
-        }
-        if (passwordEncoder.matches(user.getPassword(), storedUser.getPassword())) {
-            String token = generateJwtToken(storedUser.getEmail());
-            return ResponseEntity.ok(token);
-        } else {
-            return ResponseEntity.status(401).body("Invalid credentials");
-        }
+   
+    @PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody User user) {
+    try{
+    User storedUser = userRepository.findByEmail(user.getEmail());
+    if (storedUser == null) {
+        return ResponseEntity.status(401).body("Invalid credentials");
     }
+
+    System.out.println("Input Password Matches: " + passwordEncoder.matches(user.getPassword(), storedUser.getPassword()));
+
+    if (passwordEncoder.matches(user.getPassword(), storedUser.getPassword())) {
+        String token = generateJwtToken(storedUser.getEmail());
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return ResponseEntity.ok(response); // Returns JSON object
+    } else {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Invalid credentials");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+} catch (Exception e) {
+    System.err.println("Login error: " + e.getMessage());
+    e.printStackTrace(); // Log the stack trace
+
+    return ResponseEntity.status(500).body("Internal server error");
+}
+}
 
     private String generateJwtToken(String email) {
         long nowMillis = System.currentTimeMillis();
@@ -62,7 +77,9 @@ return new ResponseEntity<>("Account created successfully", HttpStatus.CREATED);
         long expMillis = nowMillis + 3600000; // 1 hour expiration
         Date exp = new Date(expMillis);
 
-        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes()); //reate key from secret key string
+        String jwtSecret = System.getenv("JWT_SECRET");
+
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes()); //create key from secret key string
         
         return Jwts.builder()
                 .setSubject(email)
@@ -89,6 +106,8 @@ return new ResponseEntity<>("Account created successfully", HttpStatus.CREATED);
   
     @PostMapping("/users")
     public User addOnUser(@RequestBody User user) {
-      return this.userRepository.save(user);
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+        return this.userRepository.save(user);
     }
 }

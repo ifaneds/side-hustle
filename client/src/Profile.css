@@ -1,0 +1,33 @@
+.profile {
+  display: flex;
+  flex-direction: row; /* Change to row to align nav and content */
+  align-items: flex-start; /* Align items to the top */
+  margin-top: 0px;
+  padding: 0px;
+}
+
+.profile nav {
+  display: flex;
+  flex-direction: column; /* Change to column to stack items */
+  align-items: flex-start; /* Align items to the left */
+  margin-right: 20px; /* Add spacing between nav and content */
+  border-right: 1px solid rgb(216, 216, 216);
+  height: 200px;
+}
+
+.profile nav a {
+  font-size: 16px;
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  margin-bottom: 10px; /* Add spacing between links */
+  margin-right: 10px;
+}
+
+/* Remove bottom margin on the last link */
+.profile nav a:last-child {
+  margin-bottom: 0;
+}
+
+#content {
+  flex-grow: 1; /* Allow content to expand */
+}

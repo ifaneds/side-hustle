@@ -1,25 +1,34 @@
 // SignInPage.js
-
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Import Link
-import AuthService from "./AuthService"; // Import your AuthService (if you have one)
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "./AuthContext"; // Import useAuth
 import "./SignInPage.css";
 
 function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useAuth(); // Access login from context
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real app, send email and password to your backend
-    // For this example, we'll simulate a successful login
-    AuthService.login("fake-token"); // Store a fake token
-    navigate("/"); // Redirect to home
+    try {
+      await login(email, password);
+      navigate("/find-job");
+    } catch (error) {
+      alert(error.message);
+      console.error("Login failed:", error);
+    }
   };
 
   return (
     <div>
+      <header className="App-header">
+        <Link to="/">
+          <h1>Side Hustle</h1>
+        </Link>
+      </header>
+      <div className="space" />
       <main className="sign-in">
         <h2>Sign In</h2>
         <form onSubmit={handleSubmit}>
