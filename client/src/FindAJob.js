@@ -19,7 +19,6 @@ function FindAJob() {
         params.append("category", categoryFilter || ""); // Use "" if categoryFilter is empty
         if (minPayRate) params.append("minPayRate", minPayRate);
         if (maxPayRate) params.append("maxPayRate", maxPayRate);
-
         if (skillsFilter) {
           skillsFilter
             .split(",")
