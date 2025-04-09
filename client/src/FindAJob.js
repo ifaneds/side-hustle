@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import SkillInput from "./SkillInput";
+import Select from "react-select/base";
+
+import "./FindAJob.css"; // Import your CSS file here
 
 function FindAJob() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -9,52 +13,49 @@ function FindAJob() {
   const [skillsFilter, setSkillsFilter] = useState("");
   const [jobs, setJobs] = useState([]);
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const params = new URLSearchParams();
+  const fetchJobs = async () => {
+    try {
+      const params = new URLSearchParams();
 
-        params.append("title", searchTerm || ""); // Use "" if searchTerm is empty
-        params.append("location", locationFilter || ""); // Use "" if locationFilter is empty
-        params.append("category", categoryFilter || ""); // Use "" if categoryFilter is empty
-        if (minPayRate) params.append("minPayRate", minPayRate);
-        if (maxPayRate) params.append("maxPayRate", maxPayRate);
-        if (skillsFilter) {
-          skillsFilter
-            .split(",")
-            .map((skill) => skill.trim())
-            .filter((skill) => skill !== "")
-            .forEach((skill) => {
-              params.append("skills", skill);
-            });
-        } else {
-          params.append("skills", "");
-        }
-
-        const response = await fetch(
-          `http://localhost:8081/api/jobs?${params.toString()}`
-        ); //needs changing when deploying to production
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setJobs(data);
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
+      params.append("generalSearch", searchTerm || ""); // Use "" if searchTerm is empty
+      params.append("location", locationFilter || ""); // Use "" if locationFilter is empty
+      params.append("category", categoryFilter || ""); // Use "" if categoryFilter is empty
+      if (minPayRate) params.append("minPayRate", minPayRate);
+      if (maxPayRate) params.append("maxPayRate", maxPayRate);
+      if (skillsFilter) {
+        skillsFilter
+          .map((skill) => skill.trim())
+          .filter((skill) => skill !== "")
+          .forEach((skill) => {
+            params.append("skills", skill);
+          });
+      } else {
+        params.append("skills", "");
       }
-    };
 
+      const response = await fetch(
+        `http://localhost:8081/api/jobs?${params.toString()}`
+      ); //needs changing when deploying to production
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setJobs(data);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+    }
+  };
+
+  const handleSearch = () => {
     fetchJobs();
-  }, [
-    searchTerm,
-    locationFilter,
-    categoryFilter,
-    minPayRate,
-    maxPayRate,
-    skillsFilter,
-  ]);
+  };
+
+  const handleSkillChange = (value) => {
+    console.log("Skill changed to:", value);
+    setSkillsFilter(value); // Update the skills filter state};
+  };
 
   return (
     <div>
@@ -74,11 +75,11 @@ function FindAJob() {
           />
         </div>
 
-        <div style={{ display: "flex", flexWrap: "wrap", marginTop: "20px" }}>
+        <div>
           <select
+            className="filter-dropdown"
             value={locationFilter}
             onChange={(e) => setLocationFilter(e.target.value)}
-            style={{ margin: "5px", padding: "10px" }}
           >
             <option value="">All Locations</option>
             <option value="London">London</option>
@@ -87,9 +88,9 @@ function FindAJob() {
           </select>
 
           <select
+            className="filter-dropdown"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            style={{ margin: "5px", padding: "10px" }}
           >
             <option value="">All Categories</option>
             <option value="Programming">Programming</option>
@@ -114,14 +115,12 @@ function FindAJob() {
             style={{ margin: "5px", padding: "10px" }}
           />
 
-          <input
-            type="text"
-            placeholder="Skills (comma-separated)"
-            value={skillsFilter}
-            onChange={(e) => setSkillsFilter(e.target.value)}
-            style={{ margin: "5px", padding: "10px" }}
-          />
+          <SkillInput onChange={handleSkillChange} />
         </div>
+
+        <button className="search-button" onClick={handleSearch}>
+          Search Jobs
+        </button>
 
         <div style={{ marginTop: "20px" }}>
           <h2>Job Results</h2>

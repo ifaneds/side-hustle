@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -25,7 +24,7 @@ public class JobController {
 
     @GetMapping
     public ResponseEntity<List<Job>> searchJobs(
-            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String generalSearch,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) BigDecimal minPayRate,
@@ -40,13 +39,13 @@ public class JobController {
             List<Job> jobs;
         if (skills != null && !skills.isEmpty()) {
             jobs = jobRepository.findJobsByFilters(
-                    title, location, category, adjustedMinPayRate, adjustedMaxPayRate, skills);
+                    generalSearch, location, category, adjustedMinPayRate, adjustedMaxPayRate, skills);
         } else {
             jobs = jobRepository.findJobsWithoutSkillsFilter(
-                    title, location, category, adjustedMinPayRate, adjustedMaxPayRate);
+                    generalSearch, location, category, adjustedMinPayRate, adjustedMaxPayRate);
         }
 
-            System.out.println("Title: " + title); // Debugging line to check the title parameter
+            System.out.println("Search: " + generalSearch); // Debugging line to check the title parameter
             System.out.println("Location: " + location); // Debugging line to check the location parameter
             System.out.println("Category: " + category); // Debugging line to check the category parameter
             System.out.println("Min Pay Rate: " + adjustedMinPayRate); // Debugging line to check the min pay rate parameter

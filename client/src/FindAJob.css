@@ -1,0 +1,47 @@
+.search-button {
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #45a049;
+}
+
+.search-button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.filter-dropdown {
+  background-color: #916f6f;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.filter-dropdown:hover {
+  background-color: #801b1b;
+}
+
+.filter-dropdown option {
+  background-color: rgb(73, 210, 155);
+}
+
+.filter-dropdown option:focus {
+  background-color: grey !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: black !important;
+  background: none;
+}
