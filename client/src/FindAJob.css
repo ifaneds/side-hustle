@@ -20,28 +20,3 @@
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
-
-.filter-dropdown {
-  background-color: #916f6f;
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 5px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.filter-dropdown:hover {
-  background-color: #801b1b;
-}
-
-.filter-dropdown option {
-  background-color: rgb(73, 210, 155);
-}
-
-.filter-dropdown option:focus {
-  background-color: grey !important;
-  outline: none !important;
-  box-shadow: none !important;
-  color: black !important;
-  background: none;
-}

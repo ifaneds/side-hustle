@@ -25,39 +25,42 @@ public class JobController {
     @GetMapping
     public ResponseEntity<List<Job>> searchJobs(
             @RequestParam(required = false) String generalSearch,
-            @RequestParam(required = false) String location,
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false) List<String> location,
+            @RequestParam(required = false) List<String> category,
             @RequestParam(required = false) BigDecimal minPayRate,
             @RequestParam(required = false) BigDecimal maxPayRate,
-            @RequestParam(required = false)  List<String> skills
-            ) 
-        {
+            @RequestParam(required = false) List<String> skills
+    ) {
 
-            BigDecimal adjustedMinPayRate = (minPayRate == null) ? BigDecimal.ZERO : minPayRate;
-            BigDecimal adjustedMaxPayRate = (maxPayRate == null) ? new BigDecimal("999999999999999999999999999999") : maxPayRate; // A very large number
+        BigDecimal adjustedMinPayRate = (minPayRate == null) ? BigDecimal.ZERO : minPayRate;
+        BigDecimal adjustedMaxPayRate = (maxPayRate == null) ? new BigDecimal("999999999999999999999999999999") : maxPayRate; // A very large number
 
-            List<Job> jobs;
-        if (skills != null && !skills.isEmpty()) {
+        List<String> processedLocation = (location == null || location.isEmpty()) ? null : location;
+        List<String> processedCategory = (category == null || category.isEmpty()) ? null : category;
+        List<String> processedSkills = (skills == null || skills.isEmpty()) ? null : skills;
+
+        System.out.println("Search: " + generalSearch);
+        System.out.println("Location (processed): " + processedLocation);
+        System.out.println("Category (processed): " + processedCategory);
+        System.out.println("Min Pay Rate: " + adjustedMinPayRate);
+        System.out.println("Max Pay Rate: " + adjustedMaxPayRate);
+        System.out.println("Skills: " + processedSkills);
+
+        List<Job> jobs;
+        if (processedSkills != null) {
             jobs = jobRepository.findJobsByFilters(
-                    generalSearch, location, category, adjustedMinPayRate, adjustedMaxPayRate, skills);
+                    generalSearch, processedLocation, processedCategory, adjustedMinPayRate, adjustedMaxPayRate, processedSkills);
         } else {
             jobs = jobRepository.findJobsWithoutSkillsFilter(
-                    generalSearch, location, category, adjustedMinPayRate, adjustedMaxPayRate);
+                    generalSearch, processedLocation, processedCategory, adjustedMinPayRate, adjustedMaxPayRate);
         }
 
-            System.out.println("Search: " + generalSearch); // Debugging line to check the title parameter
-            System.out.println("Location: " + location); // Debugging line to check the location parameter
-            System.out.println("Category: " + category); // Debugging line to check the category parameter
-            System.out.println("Min Pay Rate: " + adjustedMinPayRate); // Debugging line to check the min pay rate parameter
-            System.out.println("Max Pay Rate: " + adjustedMaxPayRate); // Debugging line to check the max pay rate parameter
-            System.out.println("Skills: " + skills); // Debugging line to check the skills parameter
-            System.out.println("Jobs found: " + jobs.size()); // Debugging line to check the number of jobs found
+        System.out.println("Jobs found: " + jobs.size());
 
         if (jobs.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(jobs);
         }
 
-       
         return ResponseEntity.ok(jobs);
     }
 }
