@@ -10,31 +10,31 @@ import java.util.List;
 public interface JobRepository extends JpaRepository<Job, Long> {
 
     @Query("SELECT j FROM Job j WHERE " +
-           "(:title = '' OR :title IS NULL OR LOWER(j.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
-           "(CASE WHEN :location = '' THEN TRUE ELSE LOWER(CAST(j.location AS STRING)) = LOWER(:location) END) AND " +
-           "(CASE WHEN :category = '' THEN TRUE ELSE LOWER(CAST(j.category AS STRING)) = LOWER(:category) END) AND " +
-           "(:minPayRate IS NULL OR j.payRate >= :minPayRate) AND " +
-           "(:maxPayRate IS NULL OR j.payRate <= :maxPayRate) AND " +
-           "(CASE WHEN :skills IS NULL OR :skills = '' THEN TRUE ELSE EXISTS (SELECT s FROM j.skills s WHERE s.name IN :skills) END)")
+            "(:title = '' OR :title IS NULL OR LOWER(j.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
+            "(:location IS NULL OR j.location IN :location) AND " +
+            "(:category IS NULL OR j.category IN :category) AND " +
+            "(:minPayRate IS NULL OR j.payRate >= :minPayRate) AND " +
+            "(:maxPayRate IS NULL OR j.payRate <= :maxPayRate) AND " +
+            "(CASE WHEN :skills IS NULL THEN TRUE ELSE EXISTS (SELECT s FROM j.skills s WHERE s.name IN :skills) END)")
     List<Job> findJobsByFilters(
             @Param("title") String title,
-            @Param("location") String location,
-            @Param("category") String category,
+            @Param("location") List<String> location,
+            @Param("category") List<String> category,
             @Param("minPayRate") BigDecimal minPayRate,
             @Param("maxPayRate") BigDecimal maxPayRate,
             @Param("skills") List<String> skills
     );
 
     @Query("SELECT j FROM Job j WHERE " +
-           "(:title = '' OR :title IS NULL OR LOWER(j.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
-           "(CASE WHEN :location = '' THEN TRUE ELSE LOWER(CAST(j.location AS STRING)) = LOWER(:location) END) AND " +
-           "(CASE WHEN :category = '' THEN TRUE ELSE LOWER(CAST(j.category AS STRING)) = LOWER(:category) END) AND " +
-           "(:minPayRate IS NULL OR j.payRate >= :minPayRate) AND " +
-           "(:maxPayRate IS NULL OR j.payRate <= :maxPayRate)")
+            "(:title = '' OR :title IS NULL OR LOWER(j.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
+            "(:location IS NULL OR j.location IN :location) AND " +
+            "(:category IS NULL OR j.category IN :category) AND " +
+            "(:minPayRate IS NULL OR j.payRate >= :minPayRate) AND " +
+            "(:maxPayRate IS NULL OR j.payRate <= :maxPayRate)")
     List<Job> findJobsWithoutSkillsFilter(
             @Param("title") String title,
-            @Param("location") String location,
-            @Param("category") String category,
+            @Param("location") List<String> location,
+            @Param("category") List<String> category,
             @Param("minPayRate") BigDecimal minPayRate,
             @Param("maxPayRate") BigDecimal maxPayRate
     );
