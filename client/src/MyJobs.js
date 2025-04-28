@@ -1,4 +1,4 @@
-import "./Profile.css";
+import "./css/Profile.css";
 
 function MyJobs() {
   return (

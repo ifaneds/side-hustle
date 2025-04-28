@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import "./SignUpPage.css";
+import "./css/SignUpPage.css";
 
 function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ function SignUpPage() {
       password,
     };
     try {
-      const response = await fetch("http://localhost:8081/api/register", {
+      const response = await fetch("/api/register", {
         method: "POST", // POST request to register endpoint
         headers: {
           "Content-Type": "application/json",
