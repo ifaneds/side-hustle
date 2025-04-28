@@ -55,9 +55,10 @@ public ResponseEntity<?> login(@RequestBody User user) {
 
     if (passwordEncoder.matches(user.getPassword(), storedUser.getPassword())) {
         String token = generateJwtToken(storedUser.getEmail());
-        Map<String, String> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("token", token);
-        return ResponseEntity.ok(response); // Returns JSON object
+        response.put("userId", storedUser.getId());
+        return ResponseEntity.ok(response); // Returns JSON object with token and userId
     } else {
         Map<String, String> response = new HashMap<>();
         response.put("error", "Invalid credentials");

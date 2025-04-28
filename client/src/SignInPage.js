@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "./AuthContext"; // Import useAuth
-import "./SignInPage.css";
+import authService from "./AuthService";
+import "./css/SignInPage.css";
 
 function SignInPage() {
   const [email, setEmail] = useState("");

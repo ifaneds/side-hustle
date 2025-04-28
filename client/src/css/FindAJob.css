@@ -1,0 +1,116 @@
+.search-button {
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #45a049;
+}
+
+.search-button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+/* Search box styles to match MySelect */
+.search-container {
+  max-width: 100%;
+  padding: 5px 0;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 6px 0px 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-sizing: border-box;
+}
+
+.search-container input:focus {
+  border-color: #4caf50;
+  outline: 0;
+  box-shadow: 0 0 0 1px #4caf50;
+}
+
+.search-container input::placeholder {
+  color: #757575;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Pay rate input styles */
+.pay-rate-container {
+  display: flex;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.pay-rate-container input {
+  width: 100%;
+  padding: 6px 0px 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-sizing: border-box;
+}
+
+.pay-rate-container input:focus {
+  border-color: #4caf50;
+  outline: 0;
+  box-shadow: 0 0 0 1px #4caf50;
+}
+
+.pay-rate-container input::placeholder {
+  color: #757575;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Job list styles */
+.job-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.job-list li {
+  border: 1px solid #eee;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.job-list a {
+  color: #4caf50;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+  transition: color 0.2s ease;
+}
+
+.job-list a:hover {
+  color: #45a049;
+  text-decoration: underline;
+} 

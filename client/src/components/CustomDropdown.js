@@ -1,9 +1,7 @@
-// CustomDropdown.js
 import React, { useState, useRef, useEffect } from "react";
-import "./CustomDropdown.css";
+import "../css/CustomDropdown.css";
 
 function CustomDropdown({ items, buttonText, onItemClick }) {
-  // Add onItemClick prop
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -26,8 +24,8 @@ function CustomDropdown({ items, buttonText, onItemClick }) {
 
   const handleItemClick = (item) => {
     if (onItemClick) {
-      onItemClick(item); // Call the callback function
-      setIsOpen(false); // Close the dropdown after selection
+      onItemClick(item);
+      setIsOpen(false);
     }
   };
 
@@ -42,7 +40,7 @@ function CustomDropdown({ items, buttonText, onItemClick }) {
             <li
               key={index}
               className="dropdown-item"
-              onClick={() => handleItemClick(item)} // Add onClick
+              onClick={() => handleItemClick(item)}
             >
               {item}
             </li>
@@ -53,4 +51,4 @@ function CustomDropdown({ items, buttonText, onItemClick }) {
   );
 }
 
-export default CustomDropdown;
+export default CustomDropdown; 

@@ -13,13 +13,13 @@ public class UserAvailability {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "start_time")
+    @Column(name = "start_time", nullable = false)
     private OffsetDateTime startTime;
 
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = false)
     private OffsetDateTime endTime;
 
-    @Column(name = "time_zone", length = 100)
+    @Column(name = "time_zone", nullable = false)
     private String timeZone;
 
     // Constructors (optional)

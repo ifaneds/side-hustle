@@ -3,9 +3,9 @@ import React, { useEffect } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import { useAuth } from "./AuthContext"; // Import useAuth
 import authService from "./AuthService";
-import CustomDropdown from "./CustomDropdown"; // Import CustomDropdown
+import CustomDropdown from './components/CustomDropdown';
 
-import "./Layout.css";
+import "./css/Layout.css";
 
 function Layout({ children }) {
   const { isLoggedIn, setIsLoggedIn } = useAuth(); // Access context

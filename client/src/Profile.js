@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
-import "./Profile.css";
+import "./css/Profile.css";
 
 function Profile({ children }) {
   return (

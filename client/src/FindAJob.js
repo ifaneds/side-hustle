@@ -1,7 +1,7 @@
-import React, { useState, useEffect, use } from "react";
-import Select from "react-select";
+import React, { useState, useEffect } from "react";
 import MySelect from "./MySelect";
-import "./FindAJob.css"; // Import your CSS file for styling
+import "./css/FindAJob.css"; // Import your CSS file for styling
+import { Link } from "react-router-dom";
 
 function FindAJob() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,20 +14,14 @@ function FindAJob() {
   const [minPayRate, setMinPayRate] = useState("");
   const [maxPayRate, setMaxPayRate] = useState("");
   const [jobs, setJobs] = useState([]);
-  const [saveParams, setSaveParams] = useState({
-    searchTerm: "",
-    locationFilter: "",
-    categoryFilter: "",
-    skillFilter: "",
-    minPayRate: "",
-    maxPayRate: "",
-  });
+  const [jobDisplay, setJobDisplay] = useState("");
 
   useEffect(() => {
     fetchLocations();
     fetchCategories();
     fetchSkills();
-  }, []); // Fetch locations on component mount
+    fetchJobs();
+  }, []);
 
   const fetchLocations = async () => {
     try {
@@ -96,7 +90,6 @@ function FindAJob() {
       if (minPayRate) params.append("minPayRate", minPayRate);
       if (maxPayRate) params.append("maxPayRate", maxPayRate);
 
-      setSaveParams(params);
       const response = await fetch(
         `http://localhost:8081/api/jobs?${params.toString()}`
       );
@@ -104,7 +97,19 @@ function FindAJob() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setJobs(data);
+      if (data && data.message) {
+        // Handle the "no jobs found" message
+        setJobs([]); // Clear any previous jobs
+        console.log("No jobs found:", data.message);
+        setJobDisplay(data.message);
+      } else if (Array.isArray(data)) {
+        // Handle the array of jobs
+        setJobs(data);
+        setJobDisplay("Jobs found:");
+      } else {
+        console.error("Unexpected response format:", data);
+        setJobs([]); // Handle unexpected data by clearing jobs
+      }
     } catch (error) {
       console.error("Error fetching jobs:", error);
     }
@@ -127,13 +132,12 @@ function FindAJob() {
     console.log("minPayRate:", minPayRate);
     console.log("maxPayRate:", maxPayRate);
     fetchJobs();
-    console.log("saveParams", saveParams);
   };
 
   return (
     <div>
       <main>
-        <div>
+        <div className="search-container">
           <input
             type="text"
             placeholder="Search jobs..."
@@ -171,36 +175,31 @@ function FindAJob() {
             />
           </div>
 
-          <input
-            type="number"
-            placeholder="Min Pay Rate"
-            value={minPayRate}
-            onChange={(e) => setMinPayRate(e.target.value)}
-          />
+          <div className="pay-rate-container">
+            <input
+              type="number"
+              placeholder="Min Pay Rate"
+              value={minPayRate}
+              onChange={(e) => setMinPayRate(e.target.value)}
+            />
 
-          <input
-            type="number"
-            placeholder="Max Pay Rate"
-            value={maxPayRate}
-            onChange={(e) => setMaxPayRate(e.target.value)}
-          />
+            <input
+              type="number"
+              placeholder="Max Pay Rate"
+              value={maxPayRate}
+              onChange={(e) => setMaxPayRate(e.target.value)}
+            />
+          </div>
         </div>
 
-        <button onClick={handleSearch}>Search Jobs</button>
+        <button className="search-button" onClick={handleSearch}>Search Jobs</button>
 
         <div style={{ marginTop: "20px" }}>
-          <h2>Job Results</h2>
-          <ul>
+          <h2>{jobDisplay}</h2>
+          <ul className="job-list">
             {jobs.map((job) => (
-              <li
-                key={job.id}
-                style={{
-                  border: "1px solid #eee",
-                  padding: "10px",
-                  marginBottom: "10px",
-                }}
-              >
-                <h3>{job.title}</h3>
+              <li key={job.id}>
+                <Link to={`/job/${job.id}`}>{job.title}</Link>
                 <p>Location: {job.location}</p>
                 <p>Pay Rate: {job.payRate}</p>
                 <p>Description: {job.description}</p>

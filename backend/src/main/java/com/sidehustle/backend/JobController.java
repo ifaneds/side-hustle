@@ -1,14 +1,16 @@
 package com.sidehustle.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 @RestController
@@ -16,14 +18,16 @@ import java.util.List;
 public class JobController {
 
     private final JobRepository jobRepository;
+    private final JobTimeSlotRepository jobTimeSlotRepository;
 
     @Autowired
-    public JobController(JobRepository jobRepository) {
+    public JobController(JobRepository jobRepository, JobTimeSlotRepository jobTimeSlotRepository) {
+        this.jobTimeSlotRepository = jobTimeSlotRepository;
         this.jobRepository = jobRepository;
     }
 
     @GetMapping
-    public ResponseEntity<List<Job>> searchJobs(
+    public ResponseEntity<?> searchJobs(
             @RequestParam(required = false) String generalSearch,
             @RequestParam(required = false) List<String> location,
             @RequestParam(required = false) List<String> category,
@@ -55,12 +59,30 @@ public class JobController {
                     generalSearch, processedLocation, processedCategory, adjustedMinPayRate, adjustedMaxPayRate);
         }
 
+
+        
         System.out.println("Jobs found: " + jobs.size());
 
         if (jobs.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(jobs);
-        }
+Map<String, String> response = new HashMap<>();
+            response.put("message", "No jobs found matching your criteria. Try different filters.");
+            return ResponseEntity.ok(response)   ;
+             }
 
         return ResponseEntity.ok(jobs);
+    }
+
+     @GetMapping("/{id}")
+    public ResponseEntity<?> getJobById(@PathVariable Long id) {
+        return jobRepository.findById(id)
+                .map(job -> ResponseEntity.ok(job))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}/time-slots")
+    public ResponseEntity<?> getJobTimeSlots(@PathVariable Long id) {
+        // Assuming you have a method to fetch time slots for a job
+        List<JobTimeSlot> timeSlots = jobTimeSlotRepository.findJobTimeSlotsByJobId(id);
+        return ResponseEntity.ok(timeSlots);
     }
 }
