@@ -3,6 +3,7 @@ import "./css/Profile.css";
 import "./css/Availability.css";
 import MonthlyCalendar from "./components/MonthlyCalendar";
 import DailyCalendar from "./components/DailyCalendar";
+import { format, toZonedTime, formatInTimeZone } from 'date-fns-tz';
 
 function Availability() {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -108,51 +109,6 @@ function Availability() {
         nextDate = new Date(nextDate);
         nextDate.setMonth(nextDate.getMonth() + 1);
       }
-    }
-    
-    return [...dates];
-  };
-
-  // Get recurring dates for a range
-  const getRecurringDatesForRange = (event, startDate, endDate) => {
-    const dates = new Set();
-    const rangeDates = getDatesInRange(startDate, endDate);
-    
-    // First, add all dates in the initial range
-    rangeDates.forEach(date => dates.add(date));
-    
-    if (event.recurrence && event.recurrence.type === 'weekly') {
-      // For weekly recurrence, we need to maintain the pattern of days
-      const until = new Date(event.recurrence.until);
-      const daysInRange = rangeDates.map(date => new Date(date).getDay());
-      let weekStart = new Date(startDate);
-      
-      // Move to the start of the next week
-      weekStart.setDate(weekStart.getDate() + 7);
-      
-      while (weekStart <= until) {
-        daysInRange.forEach(dayOfWeek => {
-          const nextDate = new Date(weekStart);
-          const diff = dayOfWeek - nextDate.getDay();
-          nextDate.setDate(nextDate.getDate() + diff);
-          
-          if (nextDate <= until) {
-            dates.add(nextDate.toISOString().split('T')[0]);
-          }
-        });
-        
-        weekStart.setDate(weekStart.getDate() + 7);
-      }
-    } else if (event.recurrence && event.recurrence.type === 'monthly') {
-      // For monthly recurrence, calculate for each date in the range
-      rangeDates.forEach(date => {
-        const recurringDates = getRecurringDates({
-          ...event,
-          startDate: date,
-          endDate: date
-        }, date);
-        recurringDates.forEach(d => dates.add(d));
-      });
     }
     
     return [...dates];
@@ -324,42 +280,35 @@ function Availability() {
         return;
       }
 
-      console.log("User ID from localStorage:", userId, "Type:", typeof userId);
-
-      // Get the user's timezone
       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      console.log("User timezone:", userTimeZone);
 
-      // Prepare data for API
       const availabilityData = {
-        userId: Number(userId), // Ensure it's a number
+        userId: Number(userId),
         unavailableEvents: unavailableEvents.map(event => {
           // Create Date objects in the user's timezone
-          const startDate = new Date(`${event.startDate}T${event.startTime || '00:00'}`);
-          const endDate = new Date(`${event.endDate}T${event.endTime || '23:59'}`);
-          
-          // Format as ISO strings with timezone offset
-          const startDateTime = startDate.toISOString();
-          const endDateTime = endDate.toISOString();
-          
-          console.log('Formatting event:', {
-            original: event,
-            formatted: {
-              start: startDateTime,
-              end: endDateTime,
-              timeZone: userTimeZone
-            }
-          });
+          const startDate = new Date(`${event.startDate}T${event.start}`);
+          let endDate;
+
+          // Handle "All Day" events
+          if (event.start === '00:00' && event.end === '23:59') {
+            // Set endDate to the end of the day
+            endDate = new Date(`${event.startDate}T23:59:59`);
+          } else {
+            endDate = new Date(`${event.startDate}T${event.end}`);
+          }
+
+          // Format to UTC using the user's time zone
+          const startDateTime = formatInTimeZone(startDate, userTimeZone, "yyyy-MM-dd'T'HH:mm:ssXXX");
+          const endDateTime = formatInTimeZone(endDate, userTimeZone, "yyyy-MM-dd'T'HH:mm:ssXXX");
 
           return {
             start: startDateTime,
             end: endDateTime,
-            timeZone: userTimeZone
+            timeZone: userTimeZone,
+            title: event.title || (event.start === '00:00' && event.end === '23:59' ? 'All Day' : 'Unavailable')
           };
         })
       };
-
-      console.log('Sending availability data:', availabilityData);
 
       // Make API call with credentials and headers
       const response = await fetch('http://localhost:8081/api/availability/save', {
@@ -408,20 +357,35 @@ function Availability() {
         }
 
         const data = await response.json();
+        console.log("Received availability data:", data);
         
         // Convert backend format to frontend format
         const events = data.map(event => {
-          // Parse the dates from the backend
+          // Parse the dates from the backend with the correct time zone
           const startDateTime = new Date(event.startTime);
           const endDateTime = new Date(event.endTime);
 
-          // Format dates and times in the user's local timezone
-          const startDate = startDateTime.toISOString().split('T')[0];
-          const endDate = endDateTime.toISOString().split('T')[0];
+          // Adjust for the time zone
+          const userTimeZone = event.timeZone; // Assuming this is stored in the event
+          const startDateTimeInUserZone = formatInTimeZone(startDateTime, userTimeZone, "yyyy-MM-dd'T'HH:mm:ssXXX");
+          const endDateTimeInUserZone = formatInTimeZone(endDateTime, userTimeZone, "yyyy-MM-dd'T'HH:mm:ssXXX");
+
+          // Format dates in YYYY-MM-DD format
+          const startDate = startDateTimeInUserZone.split('T')[0];
+          const endDate = endDateTimeInUserZone.split('T')[0];
           
           // Format times in 24-hour format with leading zeros
-          const startTime = startDateTime.toTimeString().slice(0, 5);
-          const endTime = endDateTime.toTimeString().slice(0, 5);
+          const startTime = startDateTimeInUserZone.toLocaleTimeString('en-US', { 
+            hour12: false, 
+            hour: '2-digit', 
+            minute: '2-digit'
+          });
+          
+          const endTime = endDateTimeInUserZone.toLocaleTimeString('en-US', { 
+            hour12: false, 
+            hour: '2-digit', 
+            minute: '2-digit'
+          });
 
           console.log('Parsed event:', {
             original: event,
@@ -433,16 +397,19 @@ function Availability() {
             }
           });
 
+          // Create event object with properties that match what DailyCalendar expects
           return {
             id: `event-${event.id}`,
             startDate,
             endDate,
-            startTime,
-            endTime,
+            start: startTime,
+            end: endTime,
+            title: event.title || (startTime === '00:00' && endTime === '23:59' ? 'All Day' : 'Unavailable'),
             recurrence: { type: 'none', until: '' }
           };
         });
 
+        console.log("Converted events:", events);
         setUnavailableEvents(events);
         
         // Update unavailable dates based on events
@@ -459,7 +426,7 @@ function Availability() {
     };
 
     loadAvailability();
-  }, []); // Run once on component mount
+  }, []);
 
   return (
     <div>

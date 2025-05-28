@@ -197,20 +197,23 @@ function FindAJob() {
         <div style={{ marginTop: "20px" }}>
           <h2>{jobDisplay}</h2>
           <ul className="job-list">
-            {jobs.map((job) => (
-              <li key={job.id}>
-                <Link to={`/job/${job.id}`}>{job.title}</Link>
-                <p>Location: {job.location}</p>
-                <p>Pay Rate: {job.payRate}</p>
-                <p>Description: {job.description}</p>
-                <p>
-                  Skills:{" "}
-                  {job.skills
-                    ? job.skills.map((skill) => skill.name).join(", ")
-                    : "No skills listed"}
-                </p>
-              </li>
-            ))}
+            {jobs.map((job) => {
+              console.log("Rendering job:", job);
+              return (
+                <li key={job.id}>
+                  <Link to={`/job/${job.id}`}>{job.title}</Link>
+                  <p>Location: {job.location}</p>
+                  <p>Pay Rate: {job.pay_rate}</p>
+                  <p>Description: {job.description}</p>
+                  <p>
+                    Skills:{" "}
+                    {job.skills
+                      ? job.skills.map((skill) => skill.name).join(", ")
+                      : "No skills listed"}
+                  </p>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </main>

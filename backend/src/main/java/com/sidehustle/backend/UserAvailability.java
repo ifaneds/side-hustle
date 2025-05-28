@@ -22,14 +22,18 @@ public class UserAvailability {
     @Column(name = "time_zone", nullable = false)
     private String timeZone;
 
+    @Column(name = "title")
+    private String title;
+
     // Constructors (optional)
     public UserAvailability() {}
 
-    public UserAvailability(Long userId, OffsetDateTime startTime, OffsetDateTime endTime, String timeZone) {
+    public UserAvailability(Long userId, OffsetDateTime startTime, OffsetDateTime endTime, String timeZone, String title) {
         this.userId = userId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.timeZone = timeZone;
+        this.title = title;
     }
 
     // Getters and Setters
@@ -71,5 +75,13 @@ public class UserAvailability {
 
     public void setTimeZone(String timeZone) {
         this.timeZone = timeZone;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

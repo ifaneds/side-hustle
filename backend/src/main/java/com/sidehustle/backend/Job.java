@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "jobs")
@@ -23,6 +24,7 @@ public class Job {
     @Column(name = "location", length = 255, columnDefinition = "character varying")
     private String location;
 
+    @JsonProperty("pay_rate")
     @Column(name = "pay_rate", precision = 10, scale = 2)
     private BigDecimal payRate;
 
@@ -32,6 +34,8 @@ public class Job {
     @Column(name = "created_at")
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
+    
+    @JsonProperty("user_id")
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
@@ -125,5 +129,19 @@ public class Job {
 
     public void setSkills(List<Skill> skills) {
         this.skills = skills;
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                ", payRate=" + payRate +
+                ", category='" + category + '\'' +
+                ", userId=" + userId +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

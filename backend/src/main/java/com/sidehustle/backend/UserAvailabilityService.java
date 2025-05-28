@@ -87,9 +87,10 @@ public class UserAvailabilityService {
             String startTimeStr = event.get("start").toString();
             String endTimeStr = event.get("end").toString();
             String timeZoneStr = event.get("timeZone").toString();
+            String title = event.get("title") != null ? event.get("title").toString() : null;
             
-            logger.info("Processing event times - Start: {}, End: {}, TimeZone: {}", 
-                startTimeStr, endTimeStr, timeZoneStr);
+            logger.info("Processing event times - Start: {}, End: {}, TimeZone: {}, Title: {}", 
+                startTimeStr, endTimeStr, timeZoneStr, title);
             
             try {
                 // Parse the ISO datetime strings to get the date and time components
@@ -124,6 +125,7 @@ public class UserAvailabilityService {
                 availability.setStartTime(startTimeInZone);
                 availability.setEndTime(endTimeInZone);
                 availability.setTimeZone(timeZoneStr);
+                availability.setTitle(title);
                 
                 availabilityList.add(availability);
             } catch (Exception e) {

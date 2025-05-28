@@ -11,6 +11,7 @@ import Availability from "./Availability";
 import Help from "./Help";
 import FindAJob from "./FindAJob";
 import JobInformation from "./JobInformation";
+import PostAJob from "./PostAJob";
 import { AuthProvider } from "./AuthContext";
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/job/:id" element={<JobInformation />} />
           <Route path="find-job" element={<FindAJob />} />
-          <Route path="post-job" element={<div>Post a Job</div>} />
+          <Route path="post-job" element={<PostAJob />} />
           <Route path="profile" element={<Profile />}>
             <Route path="availability" element={<Availability />} />
             <Route path="my-jobs" element={<MyJobs />} />

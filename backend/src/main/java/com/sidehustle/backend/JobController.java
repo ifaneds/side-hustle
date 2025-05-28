@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,5 +86,20 @@ Map<String, String> response = new HashMap<>();
         // Assuming you have a method to fetch time slots for a job
         List<JobTimeSlot> timeSlots = jobTimeSlotRepository.findJobTimeSlotsByJobId(id);
         return ResponseEntity.ok(timeSlots);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createJob(@RequestBody Job job) {
+        System.out.println("Received job: " + job);
+        System.out.println("User ID: " + job.getUserId());
+        System.out.println("Pay Rate: " + job.getPayRate());
+
+        Long userId = job.getUserId();
+        if (userId == null) {
+            return ResponseEntity.badRequest().body("User ID is required");
+        }
+
+        Job savedJob = jobRepository.save(job);
+        return ResponseEntity.ok(savedJob);
     }
 }
