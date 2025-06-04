@@ -15,7 +15,7 @@ import PostAJob from "./PostAJob";
 import { AuthProvider } from "./AuthContext";
 
 function App() {
-  const API_BASE_URL =
+  export defaultconst API_BASE_URL =
     process.env.NODE_ENV === "production"
       ? "https://ifaneds.github.io/side-hustle"
       : "http://localhost:8081";
