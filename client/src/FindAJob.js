@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MySelect from "./MySelect";
 import "./css/FindAJob.css"; // Import your CSS file for styling
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "./App"; // Import the API base URL from config
 
 function FindAJob() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,9 +26,7 @@ function FindAJob() {
 
   const fetchLocations = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8081/api/job-filters/locations"
-      );
+      const response = await fetch(`${API_BASE_URL}/api/job-filters/locations`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -40,7 +39,7 @@ function FindAJob() {
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8081/api/job-filters/categories"
+        `${API_BASE_URL}/api/job-filters/categories`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -53,9 +52,7 @@ function FindAJob() {
   };
   const fetchSkills = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8081/api/job-filters/skills"
-      );
+      const response = await fetch(`${API_BASE_URL}/api/job-filters/skills`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -91,7 +88,7 @@ function FindAJob() {
       if (maxPayRate) params.append("maxPayRate", maxPayRate);
 
       const response = await fetch(
-        `http://localhost:8081/api/jobs?${params.toString()}`
+        `${API_BASE_URL}/api/jobs?${params.toString()}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -192,7 +189,9 @@ function FindAJob() {
           </div>
         </div>
 
-        <button className="search-button" onClick={handleSearch}>Search Jobs</button>
+        <button className="search-button" onClick={handleSearch}>
+          Search Jobs
+        </button>
 
         <div style={{ marginTop: "20px" }}>
           <h2>{jobDisplay}</h2>
