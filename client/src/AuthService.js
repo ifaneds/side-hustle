@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "./config"; // Adjust the import path as necessary
+
 const isAuthenticated = () => {
   const token = localStorage.getItem("authToken");
   return !!token; // Returns true if token exists, false otherwise
@@ -5,7 +7,7 @@ const isAuthenticated = () => {
 
 const login = async (email, password) => {
   try {
-    const response = await fetch("http://localhost:8081/api/login", {
+    const response = await fetch(`${API_BASE_URL}/api/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -16,17 +18,22 @@ const login = async (email, password) => {
     if (response.ok) {
       const data = await response.json();
       console.log("Login response:", data);
-      
+
       localStorage.setItem("authToken", data.token); // Store the token
-      
+
       // Ensure userId is stored as a string
       if (data.userId !== undefined) {
         localStorage.setItem("userId", String(data.userId));
-        console.log("Stored user ID:", data.userId, "Type:", typeof data.userId);
+        console.log(
+          "Stored user ID:",
+          data.userId,
+          "Type:",
+          typeof data.userId
+        );
       } else {
         console.error("No user ID in login response");
       }
-      
+
       return data;
     } else {
       const errorData = await response.json();

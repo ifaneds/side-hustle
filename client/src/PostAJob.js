@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, useEffect } from "react";
+import { API_BASE_URL } from "./config"; // Import the API base URL from config
 const PostAJob = () => {
-  const [jobTitle, setJobTitle] = useState('');
-  const [jobDescription, setJobDescription] = useState('');
-  const [location, setLocation] = useState('');
-  const [payRate, setPayRate] = useState('');
-  const [category, setCategory] = useState('');
+  const [jobTitle, setJobTitle] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [payRate, setPayRate] = useState("");
+  const [category, setCategory] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem("userId");
     setUserId(userId);
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem("userId");
     if (!userId) {
       setError("User ID not found. Please log in.");
       return;
@@ -31,31 +31,31 @@ const PostAJob = () => {
       category,
       user_id: Number(userId), // Use the retrieved user ID
     };
-    console.log('Job Data:', jobData);
+    console.log("Job Data:", jobData);
     try {
-      const response = await fetch('http://localhost:8081/api/jobs', {
-        method: 'POST',
+      const response = await fetch(`${API_BASE_URL}/api/jobs`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(jobData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to post job');
+        throw new Error("Failed to post job");
       }
 
       const result = await response.json();
-      console.log('Job posted successfully:', result);
-      setSuccess('Job posted successfully!');
+      console.log("Job posted successfully:", result);
+      setSuccess("Job posted successfully!");
       // Reset form fields
-      setJobTitle('');
-      setJobDescription('');
-      setLocation('');
-      setPayRate('');
-      setCategory('');
+      setJobTitle("");
+      setJobDescription("");
+      setLocation("");
+      setPayRate("");
+      setCategory("");
     } catch (error) {
-      console.error('Error posting job:', error);
+      console.error("Error posting job:", error);
       setError(error.message);
     }
   };
@@ -63,8 +63,8 @@ const PostAJob = () => {
   return (
     <div>
       <h1>Post a Job</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>{success}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label>Job Title:</label>

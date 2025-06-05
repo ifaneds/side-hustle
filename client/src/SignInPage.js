@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "./AuthContext"; // Import useAuth
 import authService from "./AuthService";
+import { API_BASE_URL } from "./config"; // Import the API base URL from config
 import "./css/SignInPage.css";
 
 function SignInPage() {
