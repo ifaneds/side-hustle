@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import "./css/JobInformation.css";
-import { API_BASE_URL } from "./App"; // Import the API base URL from config
+import { API_BASE_URL } from "./config"; // Import the API base URL from config
 
 function JobInformation() {
   const { id } = useParams();

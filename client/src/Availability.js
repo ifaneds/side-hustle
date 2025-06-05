@@ -4,7 +4,7 @@ import "./css/Availability.css";
 import MonthlyCalendar from "./components/MonthlyCalendar";
 import DailyCalendar from "./components/DailyCalendar";
 import { format, toZonedTime, formatInTimeZone } from "date-fns-tz";
-import { API_BASE_URL } from "./App"; // Import the API base URL from config
+import { API_BASE_URL } from "./config"; // Import the API base URL from config
 
 function Availability() {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -392,7 +392,7 @@ function Availability() {
         console.log("Loading availability for user ID:", userId);
 
         const response = await fetch(
-          `http://localhost:8081/api/availability/user/${userId}`,
+          `${API_BASE_URL}/api/availability/user/${userId}`,
           {
             method: "GET",
             headers: {
