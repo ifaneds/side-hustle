@@ -26,6 +26,10 @@ function FindAJob() {
 
   const fetchLocations = async () => {
     try {
+      console.log(
+        "Fetching locations from:",
+        `${API_BASE_URL}/api/job-filters/locations`
+      );
       const response = await fetch(`${API_BASE_URL}/api/job-filters/locations`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -52,6 +56,10 @@ function FindAJob() {
   };
   const fetchSkills = async () => {
     try {
+      console.log(
+        "Fetching skills from:",
+        `${API_BASE_URL}/api/job-filters/skills`
+      );
       const response = await fetch(`${API_BASE_URL}/api/job-filters/skills`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
